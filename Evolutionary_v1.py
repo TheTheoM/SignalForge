@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
-wavelength = 1.0  # Wavelength
-x_target, y_target = 0, 10  # Target point coordinates
+wavelength = 1.0  
+x_target, y_target = 0, 10  # This is the target point the algorithm will target.
 
 
 def calculate_signal_propagation(antenna_positions, theta_steer, grid_size=300):
@@ -88,7 +88,6 @@ def evolutionary_algorithm(num_generations, population_size, num_antennas):
     for generation in range(num_generations):
         fitness = [reward_function(*individual) for individual in population]
 
-        # Track the best solution across all generations
         gen_best_index = np.argmax(fitness)
         gen_best_fitness = fitness[gen_best_index]
         if gen_best_fitness > best_fitness:
@@ -97,10 +96,8 @@ def evolutionary_algorithm(num_generations, population_size, num_antennas):
 
         fitness_history.append(best_fitness)
 
-        # Elitism: Preserve the best individual
         next_population = [best_solution]
 
-        # Selection and reproduction
         sorted_indices = np.argsort(fitness)[::-1]
         population = [population[i] for i in sorted_indices[:population_size // 2]]
 
@@ -120,21 +117,18 @@ def update_plots(antenna_positions, theta_steer, fitness_history):
     fig, axes = plt.subplots(3, 1, figsize=(12, 18))
     ax1, ax2, ax3 = axes
 
-    # Antenna positions
     ax1.set_title("Antenna Positions")
     ax1.scatter(antenna_positions[:, 0], antenna_positions[:, 1], c='blue', label='Antennas')
     ax1.set_xlabel("X Position (wavelength)")
     ax1.set_ylabel("Y Position (wavelength)")
     ax1.legend()
 
-    # Fitness history
     ax2.plot(fitness_history, label='Best Fitness Over Generations')
     ax2.set_title("Fitness History")
     ax2.set_xlabel("Generation")
     ax2.set_ylabel("Fitness")
     ax2.legend()
 
-    # Beam propagation
     intensity = calculate_signal_propagation(antenna_positions, theta_steer)
     ax3.imshow(
         intensity,
